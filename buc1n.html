@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Capit Ibal</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      font-family: Arial, sans-serif;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 {
+      margin: 15px;
+      color: #d81b60;
+    }
+
+    /* Animasi background bintang */
+    .star {
+      position: fixed;
+      width: 5px;
+      height: 5px;
+      background: white;
+      border-radius: 50%;
+      top: -10px;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      to { transform: translateY(110vh); opacity:0; }
+    }
+
+    /* Area mesin */
+    #mesin {
+      position: relative;
+      margin: auto;
+      width: 350px;
+      height: 400px;
+      background: #fff3f6;
+      border: 4px solid #d81b60;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    /* Claw (capitan kartun) */
+    #claw {
+      position: absolute;
+      top: 0;
+      left: 150px;
+      width: 50px;
+      height: 80px;
+    }
+    #claw .line {
+      width: 4px;
+      height: 50px;
+      background: #333;
+      margin: auto;
+    }
+    #claw .arms {
+      display: flex;
+      justify-content: space-between;
+      margin-top: -5px;
+    }
+    #claw .arm {
+      width: 15px;
+      height: 30px;
+      background: #666;
+      border-radius: 5px;
+      transform-origin: top;
+    }
+
+    /* Animasi turun */
+    .down {
+      animation: turun 1s forwards;
+    }
+    @keyframes turun {
+      to { transform: translateY(250px); }
+    }
+
+    /* Boneka */
+    .boneka {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      bottom: 10px;
+      cursor: pointer;
+    }
+    .boneka img {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+    }
+
+    /* Kontrol */
+    .kontrol {
+      margin-top: 15px;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      border-radius: 20px;
+      background: #ff80ab;
+      color: white;
+      font-size: 18px;
+      box-shadow: 0 4px #d81b60;
+      cursor: pointer;
+    }
+    button:active {
+      box-shadow: none;
+      transform: translateY(3px);
+    }
+
+    /* Hadiah */
+    #hadiah, #pertanyaan, #ucapan {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 10;
+      color: #d81b60;
+      text-align: center;
+      padding: 20px;
+    }
+    #hadiah img {
+      max-width: 200px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+    #pesan {
+      font-size: 18px;
+      background: #fff;
+      color: #d81b60;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 80%;
+      margin-bottom: 20px;
+    }
+
+    /* Login password */
+    #login {
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:#fce4ec;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      z-index:20;
+    }
+    #login input {
+      padding:10px;
+      border:2px solid #d81b60;
+      border-radius:10px;
+      margin:10px;
+    }
+    #salah {
+      color:red;
+      display:none;
+    }
+
+    /* Love jatuh */
+    .love {
+      position: fixed;
+      top: -10px;
+      font-size: 24px;
+      animation: jatuh 5s linear infinite;
+      color: #e91e63;
+      z-index:0;
+    }
+    @keyframes jatuh {
+      to { transform: translateY(110vh); opacity:0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="login">
+    <h2>💕 Masukkan password dulu 💕</h2>
+    <input type="password" id="password" placeholder="Ketik password...">
+    <button onclick="cekPassword()">Masuk</button>
+    <p id="salah">Password salah!</p>
+  </div>
+
+  <!-- GAME -->
+  <div id="game" style="display:none;">
+    <h1>🎁 Mesin Capit Boneka dari Ibal 🎁</h1>
+    <div id="mesin">
+      <div id="claw">
+        <div class="line"></div>
+        <div class="arms">
+          <div class="arm" id="armLeft"></div>
+          <div class="arm" id="armRight"></div>
+        </div>
+      </div>
+      <!-- Boneka -->
+      <div class="boneka"><img src="boneka1.jpg"></div>
+      <div class="boneka"><img src="boneka2.jpg"></div>
+      <div class="boneka"><img src="boneka3.jpg"></div>
+      <div class="boneka"><img src="nalong.jpg"></div>
+      <div class="boneka"><img src="cinamon.jpg"></div>
+      <div class="boneka"><img src="boneka.jpg"></div>
+    </div>
+    <div class="kontrol">
+      <button onclick="gerakKiri()">⬅️</button>
+      <button onclick="turunkanClaw()">⬇️</button>
+      <button onclick="gerakKanan()">➡️</button>
+    </div>
+  </div>
+
+  <!-- HADIAH -->
+  <div id="hadiah">
+    <img src="lopyu.jpg" alt="Foto Pasangan">
+    <div id="pesan">Hadiah kecil dari Ibal untuk cewe aku yang paling aku sayanggg 💕<br>I love you sayang!</div>
+    <button onclick="kePertanyaan()">Lanjut ➡️</button>
+  </div>
+
+  <!-- PERTANYAAN -->
+  <div id="pertanyaan">
+    <h2>💖 Sayang, kamu mau jadi pasangan aku selamanya ga? 💖</h2>
+    <div>
+      <button onclick="jawab('iya')">Iyaa 🥰</button>
+      <button onclick="jawab('engga')">Engga 😭</button>
+    </div>
+  </div>
+
+  <!-- UCAPAN -->
+  <div id="ucapan">
+    <h2 id="ucapanTeks"></h2>
+    <button onclick="mainLagi(true)">Mau main lagii 😍</button>
+    <button onclick="mainLagi(false)">Udah cukup 💕</button>
+  </div>
+
+  <!-- Musik -->
+  <audio id="bg-music" autoplay loop>
+    <source src="love.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    let claw = document.getElementById("claw");
+    let bonekas = document.querySelectorAll(".boneka");
+    let totalCapit = 0;
+    let clawX = 150;
+
+    // Password
+    function cekPassword(){
+      let pw = document.getElementById("password").value;
+      const benar = "iloveyou"; // ganti password disini
+      if(pw === benar){
+        document.getElementById("login").style.display="none";
+        document.getElementById("game").style.display="block";
+        mulaiLove();
+        mulaiBintang();
+      }else{
+        document.getElementById("salah").style.display="block";
+      }
+    }
+
+    // Random posisi boneka
+    function randomBoneka(){
+      bonekas.forEach(boneka=>{
+        let randX = Math.floor(Math.random()*280);
+        boneka.style.left = randX+"px";
+      });
+    }
+    randomBoneka();
+
+    function gerakKiri() {
+      if (clawX > 10) {
+        clawX -= 20;
+        claw.style.left = clawX + "px";
+      }
+    }
+    function gerakKanan() {
+      if (clawX < 290) {
+        clawX += 20;
+        claw.style.left = clawX + "px";
+      }
+    }
+
+    function turunkanClaw() {
+      claw.classList.add("down");
+      setTimeout(() => {
+        bonekas.forEach(boneka => {
+          let bonekaRect = boneka.getBoundingClientRect();
+          let clawRect = claw.getBoundingClientRect();
+          if (Math.abs((bonekaRect.left + bonekaRect.width/2) - (clawRect.left + clawRect.width/2)) < 30) {
+            boneka.remove();
+            totalCapit++;
+            if (totalCapit >= 3) {
+              tampilkanHadiah();
+            }
+          }
+        });
+        claw.classList.remove("down");
+      }, 1000);
+    }
+
+    function tampilkanHadiah() {
+      document.getElementById("hadiah").style.display = "flex";
+    }
+
+    function kePertanyaan(){
+      document.getElementById("hadiah").style.display="none";
+      document.getElementById("pertanyaan").style.display="flex";
+    }
+
+    function jawab(pilihan){
+      document.getElementById("pertanyaan").style.display="none";
+      document.getElementById("ucapan").style.display="flex";
+      if(pilihan === "iya"){
+        document.getElementById("ucapanTeks").innerText="Makasih sayang udah jawab Iyaa 🥰 Aku cinta kamu!";
+      }else{
+        document.getElementById("ucapanTeks").innerText="Gapapaa, makasih udah jawab 😭 Aku tetep sayang kamu!";
+      }
+    }
+
+    function mainLagi(ulang){
+      if(ulang){
+        location.reload();
+      }else{
+        document.getElementById("ucapanTeks").innerText="Oke sayang, makasih banyak ya udah main 💕";
+      }
+    }
+
+    // Musik
+    document.addEventListener("click", function() {
+      let music = document.getElementById("bg-music");
+      if (music.paused) music.play();
+    });
+
+    // Love jatuh
+    function mulaiLove(){
+      setInterval(()=>{
+        let love=document.createElement("div");
+        love.innerHTML="💖";
+        love.classList.add("love");
+        love.style.left=Math.random()*100+"vw";
+        love.style.animationDuration=(3+Math.random()*2)+"s";
+        document.body.appendChild(love);
+        setTimeout(()=>{love.remove();},5000);
+      },500);
+    }
+
+    // Bintang jatuh
+    function mulaiBintang(){
+      setInterval(()=>{
+        let star=document.createElement("div");
+        star.classList.add("star");
+        star.style.left=Math.random()*100+"vw";
+        star.style.animationDuration=(2+Math.random()*3)+"s";
+        document.body.appendChild(star);
+        setTimeout(()=>{star.remove();},5000);
+      },400);
+    }
+  </script>
+</body>
+</html>
